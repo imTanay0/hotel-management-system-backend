@@ -1,12 +1,17 @@
 import express from "express";
 
-import { getUser } from "../controllers/userController.js"
+import { getUser, createUser } from "../controllers/userController.js"
 
 const router = express.Router();
 
-// user routes
-router.route("/").get(getUser);
+// Room Allocation (Stage 3) ->
+router.route("/register").post(createUser);
 
+// find users by id
+router.route('/details/:u_id').get(getUser)
+
+// find by name
+router.route('/details').get(getUser)
 
 
 export default router;
