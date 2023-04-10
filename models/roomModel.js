@@ -17,6 +17,9 @@ const roomSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  GSTIN_no: {
+    type: String,
+  },
 });
 
 export default mongoose.model("Room", roomSchema);

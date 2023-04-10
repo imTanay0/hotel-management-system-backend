@@ -13,7 +13,7 @@ export const createUser = async (req, res) => {
       local_contact_number,
       date_of_check_in,
       company_name,
-      GSTIN_no,
+      rate_negotiated,
     } = req.body;
 
     const newUser = await User.create({
@@ -25,7 +25,7 @@ export const createUser = async (req, res) => {
       local_contact_number,
       date_of_check_in,
       company_name,
-      GSTIN_no,
+      rate_negotiated,
     });
 
     const userRoom = await Room.findOne({ room_no: room_no });
@@ -82,15 +82,42 @@ export const getUser = async (req, res) => {
 
 // Stage 2 -> Booking
 // user's booking details if booking status is true
-// export const getUserBookingDetails = async (req, res) => {
-//   try {
-//     const user = await User.findById(req.params.u_id);
+export const getUserBookingDetails = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.u_id);
 
-//     if (!user) {
-//       console.log("User not found");
-//     }
-//   } catch (error) {}
-// };
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      })
+    }
+
+    if (user.booking_status === true) {
+      return res.status(200).json({
+        success: true,
+        user: {
+          date_of_booking: user.date_of_booking,
+          // booking_from: user.booking_from,
+          // bokking_to: user.bokking_to,
+          user_name: user.name,
+          contact_no: {
+            phone_number: user.phone_number,
+            local_contact_number: user.local_contact_number,
+          },
+          // type_of_room:
+          rate_negotiated: user.rate_negotiated
+        }
+      });
+    }
+    
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 // Stage 4 -> Food
 // update food order for user

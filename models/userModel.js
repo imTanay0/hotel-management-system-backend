@@ -36,15 +36,20 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  date_of_booking: {
+    type: Date,
+    default: Date.now(),
+  },
   date_of_check_in: {
     type: Date,
   },
   company_name: {
     type: String,
   },
-  GSTIN_no: {
-    type: String,
-  },
+  rate_negotiated: {
+    type: Number,
+    default: 0,
+  }
 });
 
 export default mongoose.model("User", userSchema);
