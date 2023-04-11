@@ -26,13 +26,27 @@ const userSchema = new mongoose.Schema({
   local_contact_number: {
     type: String,
   },
-  food: [
+  user_foods: [
     {
-      food_id: {
-        type: mongoose.Schema.ObjectId,
-        ref: "Food",
+      date: {
+        type: Date,
       },
-      quantity: {
+      time: {
+        type: String,
+      },
+      room_no: {
+        type: String,
+      },
+      items_ordered: {
+        food_name: {
+          type: String,
+        },
+        food_id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Food",
+        },
+      },
+      amount: {
         type: Number,
         default: 1,
       },

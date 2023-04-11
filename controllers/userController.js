@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 import Room from "../models/roomModel.js";
+import Food from "../models/foodModel.js";
 
 // Stage 3 -> Room Allocation
 // book a user
@@ -139,7 +140,60 @@ export const getUserBookingDetails = async (req, res) => {
 
 // Stage 4 -> Food
 // update food order for user
-export const updateFoodOrder = async (req, res) => {};
+export const updateFoodOrder = async (req, res) => {
+  const userId = req.params.u_id;
+
+  const { date, time, room_no, food_name, amount } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const food = await Food.findOne({ name: food_name });
+
+    if (!food) {
+      return res.status(404).json({
+        success: false,
+        message: "Food not found",
+      });
+    }
+
+    // Update user's food order
+    const newFood = {
+      date: date,
+      time: time,
+      room_no: room_no,
+      items_ordered: {
+        food_name: food_name,
+        food_id: food._id,
+      },
+      amount: amount,
+    };
+
+    await user.updateOne({ $push: { user_foods: newFood } });
+
+    const userFoodResponse = {
+      userFood: user.user_foods.map((food) => food),
+    };
+
+    res.status(200).json({
+      success: true,
+      user_name: user.name,
+      userFoodResponse,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 // Stage 5 -> Billing
 // calculate total amount of user

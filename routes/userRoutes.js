@@ -1,6 +1,6 @@
 import express from "express";
 
-import { createUser, getUser, getUserBookingDetails } from "../controllers/userController.js"
+import { createUser, getUser, getUserBookingDetails, updateFoodOrder } from "../controllers/userController.js"
 
 const router = express.Router();
 
@@ -12,6 +12,9 @@ router.route("/register").post(createUser);
 
 // get user's booking details
 router.route('/details').get(getUserBookingDetails)
+
+// update food order
+router.route('/order-food/:u_id').post(updateFoodOrder);
 
 
 export default router;
