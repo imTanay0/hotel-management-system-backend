@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+const currDate = new Date().toDateString();
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -38,7 +40,7 @@ const userSchema = new mongoose.Schema({
   ],
   date_of_booking: {
     type: Date,
-    default: Date.now(),
+    default: currDate,
   },
   date_of_check_in: {
     type: Date,
@@ -49,7 +51,7 @@ const userSchema = new mongoose.Schema({
   rate_negotiated: {
     type: Number,
     default: 0,
-  }
+  },
 });
 
 export default mongoose.model("User", userSchema);

@@ -1,6 +1,6 @@
 import express from "express";
 
-import { getUser, createUser } from "../controllers/userController.js"
+import { createUser, getUser, getUserBookingDetails } from "../controllers/userController.js"
 
 const router = express.Router();
 
@@ -8,10 +8,10 @@ const router = express.Router();
 router.route("/register").post(createUser);
 
 // find users by id
-router.route('/details/:u_id').get(getUser)
+// router.route('/details/:u_id').get(getUser)
 
-// find by name
-router.route('/details').get(getUser)
+// get user's booking details
+router.route('/details').get(getUserBookingDetails)
 
 
 export default router;

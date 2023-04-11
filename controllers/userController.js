@@ -44,7 +44,6 @@ export const createUser = async (req, res) => {
     newUser.room = userRoom._id;
     await newUser.save();
 
-
     res.status(200).json({
       success: true,
       user: newUser,
@@ -83,34 +82,53 @@ export const getUser = async (req, res) => {
 // Stage 2 -> Booking
 // user's booking details if booking status is true
 export const getUserBookingDetails = async (req, res) => {
+  const u_id = req.params.u_id;
+
+  const userId = req.query.userID;
+
   try {
-    const user = await User.findById(req.params.u_id);
+    // const user = await User.findById(u_id);
+
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(401).json({
         success: false,
         message: "User not found",
-      })
-    }
-
-    if (user.booking_status === true) {
-      return res.status(200).json({
-        success: true,
-        user: {
-          date_of_booking: user.date_of_booking,
-          // booking_from: user.booking_from,
-          // bokking_to: user.bokking_to,
-          user_name: user.name,
-          contact_no: {
-            phone_number: user.phone_number,
-            local_contact_number: user.local_contact_number,
-          },
-          // type_of_room:
-          rate_negotiated: user.rate_negotiated
-        }
       });
     }
-    
+
+    const currDate = new Date().toDateString();
+
+    // get User's type of room from Room
+    const roomNo = user.room_no;
+
+    const userRoom = await Room.findOne({ room_no: roomNo });
+
+    if (!userRoom) {
+      return res.status(401).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+
+    const roomType = userRoom.type_of_room;
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        date_of_booking: user.date_of_booking.toDateString(),
+        booking_from: user.date_of_check_in.toDateString(),
+        bokking_to: currDate,
+        user_name: user.name,
+        contact_no: {
+          phone_number: user.phone_number,
+          local_contact_number: user.local_contact_number,
+        },
+        type_of_room: roomType,
+        rate_negotiated: user.rate_negotiated,
+      },
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
