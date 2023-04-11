@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const currDate = new Date().toDateString();
+const currentDate = new Date().toDateString();
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -54,7 +54,7 @@ const userSchema = new mongoose.Schema({
   ],
   date_of_booking: {
     type: Date,
-    default: currDate,
+    default: currentDate,
   },
   date_of_check_in: {
     type: Date,
