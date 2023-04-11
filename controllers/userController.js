@@ -164,7 +164,7 @@ export const updateFoodOrder = async (req, res) => {
       });
     }
 
-    // Update user's food order
+    // Create new food object to add to user's list of ordered foods
     const newFood = {
       date: date,
       time: time,
