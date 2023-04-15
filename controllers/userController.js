@@ -15,6 +15,7 @@ export const createUser = async (req, res) => {
       date_of_check_in,
       company_name,
       rate_negotiated,
+      GSTIN_no,
     } = req.body;
 
     const newUser = await User.create({
@@ -27,6 +28,7 @@ export const createUser = async (req, res) => {
       date_of_check_in,
       company_name,
       rate_negotiated,
+      GSTIN_no,
     });
 
     const userRoom = await Room.findOne({ room_no: room_no });
