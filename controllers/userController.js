@@ -14,9 +14,19 @@ export const createUser = async (req, res) => {
       local_contact_number,
       date_of_check_in,
       company_name,
-      rate_negotiated,
+      // rate_negotiated,
       GSTIN_no,
     } = req.body;
+
+    // Check if desired room is available or not.
+    const userRoom = await Room.findOne({ room_no: room_no });
+
+    if (!userRoom) {
+      return res.status(400).json({
+        success: false,
+        message: "Room not found, please try again with a different room",
+      });
+    }
 
     const newUser = await User.create({
       name,
@@ -27,18 +37,9 @@ export const createUser = async (req, res) => {
       local_contact_number,
       date_of_check_in,
       company_name,
-      rate_negotiated,
+      // rate_negotiated,
       GSTIN_no,
     });
-
-    const userRoom = await Room.findOne({ room_no: room_no });
-
-    if (!userRoom) {
-      return res.status(400).json({
-        success: false,
-        message: "Room not found",
-      });
-    }
 
     // update user room's booking status to true
     userRoom.booking_status = true;

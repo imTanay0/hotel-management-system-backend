@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 
 import connectDB from "./database/ConnectDB.js";
 
@@ -7,13 +8,13 @@ import userRoutes from "./routes/userRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
 import foodRoutes from "./routes/foodRoutes.js";
 
-
 // Config
 dotenv.config({ path: "database/.env" });
 
 const app = express();
 
 // middlewares
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
