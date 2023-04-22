@@ -1,11 +1,11 @@
 import express from "express";
 
-import { createUser, getUser, getUserBookingDetails, updateFoodOrder } from "../controllers/userController.js"
+import { bookUser, getUser, getUserBookingDetails, updateFoodOrder } from "../controllers/userController.js"
 
 const router = express.Router();
 
 // Room Allocation (Stage 3) ->
-router.route("/register").post(createUser);
+router.route("/book").post(bookUser);
 
 // find users by id
 // router.route('/details/:u_id').get(getUser)

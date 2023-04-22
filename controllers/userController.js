@@ -1,54 +1,46 @@
 import User from "../models/userModel.js";
+import RoomType from "../models/roomTypeModel.js";
 import Room from "../models/roomModel.js";
 import Food from "../models/foodModel.js";
 
-// Stage 3 -> Room Allocation
+// Stage 2 -> Book User
 // book a user
-export const createUser = async (req, res) => {
+export const bookUser = async (req, res) => {
   try {
     const {
-      name,
-      phone_number,
-      address,
-      room_no,
-      local_contact_number,
-      date_of_check_in,
-      company_name,
-      // rate_negotiated,
-      GSTIN_no,
+      dateOfBooking,
+      bookingFrom,
+      bookingTo,
+      customerName,
+      contactNo,
+      roomTypeName,
+      rateNegotiated,
     } = req.body;
 
     // Check if desired room is available or not.
-    const userRoom = await Room.findOne({ room_no: room_no });
+    const roomType = await RoomType.findOne({ room_type: roomTypeName });
 
-    if (!userRoom) {
+    if (!roomType) {
       return res.status(400).json({
         success: false,
-        message: "Room not found, please try again with a different room",
+        message: "The provided type of room is not available, Please select a different type of room."
       });
     }
 
     const newUser = await User.create({
-      name,
-      // photo_identity,
-      phone_number,
-      address,
-      room_no,
-      local_contact_number,
-      date_of_check_in,
-      company_name,
-      // rate_negotiated,
-      GSTIN_no,
+      date_of_booking: dateOfBooking,
+      booking_from: bookingFrom,
+      booking_to: bookingTo,
+      name: customerName,
+      phone_number: contactNo,
+      room_type: {
+        name: roomTypeName,
+        id: roomType._id,
+      },
+      rate_negotiated: rateNegotiated,
     });
 
-    // update user room's booking status to true
-    userRoom.booking_status = true;
-    await userRoom.save();
-
-    newUser.room = userRoom._id;
-    await newUser.save();
-
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       user: newUser,
     });
@@ -66,10 +58,10 @@ export const getUser = async (req, res) => {
     // search by id
     const user = await User.findById(req.params.u_id);
 
-    if (!user) {
-      console.log("User not found");
-      return;
-    }
+    // if (!user) {
+    //   console.log("User not found");
+    //   return;
+    // }
 
     res.status(200).json({
       success: true,

@@ -13,18 +13,16 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: true,
   },
   room_no: {
     type: String,
-    required: true,
   },
   room_type: {
-    room_type_name: {
+    name: {
       type: String,
       required: true,
     },
-    room_type_id: {
+    id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "RoomType",
     },
