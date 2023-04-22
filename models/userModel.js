@@ -19,9 +19,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  room: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Room",
+  room_type: {
+    room_type_name: {
+      type: String,
+      required: true,
+    },
+    room_type_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RoomType",
+    },
   },
   local_contact_number: {
     type: String,
@@ -56,15 +62,21 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: currentDate,
   },
+  booking_from: {
+    type: date,
+  },
+  booking_to: {
+    type: date,
+  },
+  rate_negotiated: {
+    type: Number,
+    default: 0,
+  },
   date_of_check_in: {
     type: Date,
   },
   company_name: {
     type: String,
-  },
-  rate_negotiated: {
-    type: Number,
-    default: 0,
   },
   GSTIN_no: {
     type: String,
