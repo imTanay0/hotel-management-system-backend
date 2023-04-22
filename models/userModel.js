@@ -63,10 +63,10 @@ const userSchema = new mongoose.Schema({
     default: currentDate,
   },
   booking_from: {
-    type: date,
+    type: Date,
   },
   booking_to: {
-    type: date,
+    type: Date,
   },
   rate_negotiated: {
     type: Number,
