@@ -15,7 +15,12 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   room_no: {
-    type: String,
+    no: {
+      type: String,
+    },
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+    }
   },
   room_type: {
     name: {
@@ -68,7 +73,6 @@ const userSchema = new mongoose.Schema({
   },
   rate_negotiated: {
     type: Number,
-    default: 0,
   },
   date_of_check_in: {
     type: Date,

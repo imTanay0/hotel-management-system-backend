@@ -87,6 +87,90 @@ export const getAllCustomers = async (req, res) => {
   }
 };
 
+// Allocate Rooms to Customers
+export const allocateRoom = async (req, res) => {
+  const {
+    name,
+    phone_number,
+    address,
+    room_no,
+    local_contact_number,
+    date_of_check_in,
+    company_name,
+    GSTIN_no,
+  } = req.body;
+
+  try {
+    const user = await User.findOne({ name });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "The customer has not booked yet",
+      });
+    }
+
+    if (user.roomAllocatedStatus) {
+      return res.status(400).json({
+        success: false,
+        message: "The Customer has already been allocated a room",
+      });
+    }
+
+    const room = await Room.findOne({ roomNo: room_no });
+
+    if (!room) {
+      return res.status(400).json({
+        success: false,
+        message: "The room is not available",
+      });
+    }
+
+    if (room.bookingStatus) {
+      return res.status(400).json({
+        success: false,
+        message: "The room is already booked",
+      });
+    }
+
+    const updatedRoom = await Room.findOneAndUpdate(
+      { roomNo: room_no },
+      { $set: { bookingStatus: true } },
+      { new: true }
+    );
+
+    const updatedUser = await User.findOneAndUpdate(
+      { name: name },
+      {
+        $set: {
+          phone_number: phone_number,
+          address: address,
+          room_no: {
+            no: room_no,
+            id: updatedRoom._id,
+          },
+          local_contact_number: local_contact_number,
+          date_of_check_in: date_of_check_in,
+          company_name: company_name,
+          GSTIN_no: GSTIN_no,
+          roomAllocatedStatus: true,
+        },
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      updatedUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // Stage 4 -> Food
 // update food order for user
 export const updateFoodOrder = async (req, res) => {
