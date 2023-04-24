@@ -58,6 +58,13 @@ export const getBookings = async (req, res) => {
   try {
     const users = await User.find({ roomAllocatedStatus: false });
 
+    if (!users) {
+      return res.status(400).json({
+        success: false,
+        message: "No bookings found",
+      });
+    }
+
     res.status(200).json({
       success: true,
       users,
@@ -87,6 +94,7 @@ export const getAllCustomers = async (req, res) => {
   }
 };
 
+// Stage 3
 // Allocate Rooms to Customers
 export const allocateRoom = async (req, res) => {
   const {
@@ -162,6 +170,30 @@ export const allocateRoom = async (req, res) => {
     res.status(200).json({
       success: true,
       updatedUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Get all residents
+export const getAllResidents = async (req, res) => {
+  try {
+    const users = await User.find({ roomAllocatedStatus: true });
+
+    if (!users) {
+      return res.status(400).json({
+        success: false,
+        message: "No Residents found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      users,
     });
   } catch (error) {
     res.status(500).json({
