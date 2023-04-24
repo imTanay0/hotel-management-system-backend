@@ -25,3 +25,23 @@ export const createRoomType = async (req, res) => {
     });
   }
 };
+
+export const getAllRoomTypes = async (req, res) => {
+  try {
+    const roomTypes = await RoomType.find({});
+
+    if (!roomTypes) {
+      res.status(400).json({ success: false, message: "Room types not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      roomTypes,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
