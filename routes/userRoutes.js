@@ -1,6 +1,11 @@
 import express from "express";
 
-import { bookUser, getUser, getUserBookingDetails, updateFoodOrder } from "../controllers/userController.js"
+import {
+  bookUser,
+  getBookings,
+  getAllCustomers,
+  updateFoodOrder,
+} from "../controllers/userController.js";
 
 const router = express.Router();
 
@@ -10,11 +15,13 @@ router.route("/book").post(bookUser);
 // find users by id
 // router.route('/details/:u_id').get(getUser)
 
-// get user's booking details
-router.route('/details').get(getUserBookingDetails)
+// get All booking details
+router.route("/bookings").get(getBookings);
+
+// Get all customers (Booked + Residing)
+router.route("/getallcustomers").get(getAllCustomers);
 
 // update food order
-router.route('/order-food/:u_id').post(updateFoodOrder);
-
+router.route("/order-food/:u_id").post(updateFoodOrder);
 
 export default router;

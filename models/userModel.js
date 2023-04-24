@@ -79,6 +79,10 @@ const userSchema = new mongoose.Schema({
   GSTIN_no: {
     type: String,
   },
+  roomAllocatedStatus: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 export default mongoose.model("User", userSchema);

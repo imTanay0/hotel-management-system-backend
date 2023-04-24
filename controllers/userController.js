@@ -23,7 +23,8 @@ export const bookUser = async (req, res) => {
     if (!roomType) {
       return res.status(400).json({
         success: false,
-        message: "The provided type of room is not available, Please select a different type of room."
+        message:
+          "The provided type of room is not available, Please select a different type of room.",
       });
     }
 
@@ -52,20 +53,14 @@ export const bookUser = async (req, res) => {
   }
 };
 
-// get user details
-export const getUser = async (req, res) => {
+// show all bookings
+export const getBookings = async (req, res) => {
   try {
-    // search by id
-    const user = await User.findById(req.params.u_id);
-
-    // if (!user) {
-    //   console.log("User not found");
-    //   return;
-    // }
+    const users = await User.find({ roomAllocatedStatus: false });
 
     res.status(200).json({
       success: true,
-      user,
+      users,
     });
   } catch (error) {
     res.status(500).json({
@@ -75,55 +70,14 @@ export const getUser = async (req, res) => {
   }
 };
 
-// Stage 2 -> Booking
-// user's booking details if booking status is true
-export const getUserBookingDetails = async (req, res) => {
-  const u_id = req.params.u_id;
-
-  const userId = req.query.userID;
-
+// Get All Customers
+export const getAllCustomers = async (req, res) => {
   try {
-    // const user = await User.findById(u_id);
+    const users = await User.find();
 
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    const currDate = new Date().toDateString();
-
-    // get User's type of room from Room
-    const roomNo = user.room_no;
-
-    const userRoom = await Room.findOne({ room_no: roomNo });
-
-    if (!userRoom) {
-      return res.status(401).json({
-        success: false,
-        message: "Room not found",
-      });
-    }
-
-    const roomType = userRoom.type_of_room;
-
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      user: {
-        date_of_booking: user.date_of_booking.toDateString(),
-        booking_from: user.date_of_check_in.toDateString(),
-        bokking_to: currDate,
-        user_name: user.name,
-        contact_no: {
-          phone_number: user.phone_number,
-          local_contact_number: user.local_contact_number,
-        },
-        type_of_room: roomType,
-        rate_negotiated: user.rate_negotiated,
-      },
+      users,
     });
   } catch (error) {
     res.status(500).json({
