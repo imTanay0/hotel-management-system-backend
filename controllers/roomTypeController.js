@@ -28,7 +28,7 @@ export const createRoomType = async (req, res) => {
 
 export const getAllRoomTypes = async (req, res) => {
   try {
-    const roomTypes = await RoomType.find({});
+    const roomTypes = await RoomType.find();
 
     if (!roomTypes) {
       res.status(400).json({ success: false, message: "Room types not found" });

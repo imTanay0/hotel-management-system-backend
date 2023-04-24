@@ -1,16 +1,25 @@
 import mongoose from "mongoose";
 
 const roomSchema = new mongoose.Schema({
-  room_no: {
+  roomNo: {
     type: String,
     required: true,
     unique: true,
+  },
+  roomType: {
+    name: {
+      type: String,
+      required: true,
+    },
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+    }
   },
   rate: {
     type: String,
     required: true,
   },
-  booking_status: {
+  bookingStatus: {
     type: Boolean,
     default: false,
   },

@@ -1,19 +1,34 @@
 import Room from "../models/roomModel.js";
+import RoomType from "../models/roomTypeModel.js";
 
 // Insert a new room
 export const insertRoom = async (req, res) => {
   try {
-    const { type_of_room, room_no, rate } = req.body;
+    const { roomNo, roomType, rate } = req.body;
 
-    if (!type_of_room || !room_no || !rate) {
+    if (!roomNo || !roomType || !rate) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required" });
     }
 
+    const roomTypeCheck = await RoomType.findOne({ room_type: roomType });
+
+    if (!roomTypeCheck) {
+      return res.status(400).json({
+        success: false,
+        message: "Type of Room not found, Enter a valid room type",
+      });
+    }
+
+    const roomTypeId = roomTypeCheck._id;
+
     const newRoom = await Room.create({
-      type_of_room,
-      room_no,
+      roomNo,
+      roomType: {
+        name: roomType,
+        id: roomTypeId,
+      },
       rate,
     });
 
@@ -23,12 +38,24 @@ export const insertRoom = async (req, res) => {
         .json({ success: false, message: "Could not create new room" });
     }
 
+    // Add roomNo to RoomType array
+    const newArr = [
+      {
+        no: newRoom.roomNo,
+        room_no_id: newRoom._id,
+      },
+    ];
+
+    await RoomType.findByIdAndUpdate(roomTypeId, {
+      $push: { room_no: newArr },
+    });
+
     res.status(200).json({
       success: true,
       newRoom,
     });
   } catch (error) {
-    res.status(error.status).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -38,16 +65,16 @@ export const insertRoom = async (req, res) => {
 // get room details
 export const getRoomDetails = async (req, res) => {
   try {
-    const room = await Room.findById(req.params.r_id);
+    const rooms = await Room.find();
 
-    if (!room) {
-      console.log("Room not found");
+    if (!rooms) {
+      console.log("Rooms not found");
       return;
     }
 
     res.status(200).json({
       success: true,
-      room,
+      rooms,
     });
   } catch (error) {
     res.status(error.status).json({
