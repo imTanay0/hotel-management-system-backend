@@ -4,8 +4,9 @@ import cors from "cors";
 
 import connectDB from "./database/ConnectDB.js";
 
-import userRoutes from "./routes/userRoutes.js";
+import roomTypeRoutes from "./routes/roomTypeRoutes.js"
 import roomRoutes from "./routes/roomRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import foodRoutes from "./routes/foodRoutes.js";
 
 // Config
@@ -19,8 +20,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // routes
-app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/roomtype", roomTypeRoutes);
 app.use("/api/v1/room", roomRoutes);
+app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/food", foodRoutes);
 
 // connect to database
