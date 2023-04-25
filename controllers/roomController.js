@@ -12,6 +12,14 @@ export const insertRoom = async (req, res) => {
         .json({ success: false, message: "All fields are required" });
     }
 
+    const existRoom = await Room.findOne({ roomNo });
+
+    if (existRoom) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Room already exists" });
+    }
+
     const roomTypeCheck = await RoomType.findOne({ room_type: roomType });
 
     if (!roomTypeCheck) {
