@@ -4,6 +4,16 @@ export const createRoomType = async (req, res) => {
   const { roomType } = req.body;
 
   try {
+
+    const existingRoomType = await RoomType.findOne({ room_type: roomType });
+
+    if (existingRoomType) {
+      return res.status(400).json({
+        success: false,
+        message: "Room type already exists",
+      })
+    }
+    
     const newRoomType = await RoomType.create({
       room_type: roomType,
     });
