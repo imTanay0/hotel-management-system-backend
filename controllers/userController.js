@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import RoomType from "../models/roomTypeModel.js";
 import Room from "../models/roomModel.js";
 import Food from "../models/foodModel.js";
+import { get } from "mongoose";
 
 // Stage 2 -> Book User
 // book a user
@@ -65,9 +66,74 @@ export const getBookings = async (req, res) => {
       });
     }
 
+    // TRY
+    const reqRoomTypes = [];
+
+    users.map((user) => {
+      reqRoomTypes.push({
+        userName: user.name,
+        roomType: user.room_type.name,
+      });
+    });
+
+    const getRoomNos = async () => {
+      const roomNos = [];
+
+      await Promise.all(
+        reqRoomTypes.map(async (reqRoomType) => {
+          const roomType = await RoomType.findOne({
+            room_type: reqRoomType.roomType,
+          });
+
+          roomType.room_no.map((elt) => {
+            roomNos.push({
+              userName: reqRoomType.userName,
+              roomno: elt.no,
+            });
+          });
+          return roomNos;
+        })
+      );
+
+      return roomNos;
+    };
+
+    const roomNos = await getRoomNos();
+
+    // console.log("Room nos: ", roomNos);
+
+    // const roomStatus = [];
+    
+    async function getRoomStatus() {
+      const roomStatus = [];
+    
+      await Promise.all(
+        roomNos.map(async (elt) => {
+          const room = await Room.findOne({ roomNo: elt.roomno });
+    
+          roomStatus.push({
+            userName: elt.userName,
+            roomNo: room.roomNo,
+            bookingStatus: room.bookingStatus,
+          });
+        })
+      );
+    
+      return roomStatus;
+    }
+
+    const roomStatus = await getRoomStatus();
+
+    console.log("hey :", roomStatus);
+
+    const data = {
+      users: users,
+      roomStatus: roomStatus,
+    }
+    
     res.status(200).json({
       success: true,
-      users,
+      data,
     });
   } catch (error) {
     res.status(500).json({
