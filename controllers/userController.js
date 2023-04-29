@@ -2,7 +2,6 @@ import User from "../models/userModel.js";
 import RoomType from "../models/roomTypeModel.js";
 import Room from "../models/roomModel.js";
 import Food from "../models/foodModel.js";
-import { get } from "mongoose";
 
 // Stage 2 -> Book User
 // book a user
@@ -66,74 +65,51 @@ export const getBookings = async (req, res) => {
       });
     }
 
-    // TRY
-    const reqRoomTypes = [];
+    const findAvailableRoomsForUser = async (userRoomType) => {
+      try {
+        // Find the room type document for the user's room type
+        const roomType = await RoomType.findOne({
+          room_type: userRoomType,
+        }).populate("room_no.room_no_id");
 
-    users.map((user) => {
-      reqRoomTypes.push({
-        userName: user.name,
-        roomType: user.room_type.name,
-      });
-    });
+        // Get an array of all room numbers associated with the room type
+        const roomNos = roomType.room_no.map((room) => room.no);
 
-    const getRoomNos = async () => {
-      const roomNos = [];
+        // Find all Room documents with those room numbers
+        const rooms = await Room.find({ roomNo: { $in: roomNos } });
 
-      await Promise.all(
-        reqRoomTypes.map(async (reqRoomType) => {
-          const roomType = await RoomType.findOne({
-            room_type: reqRoomType.roomType,
-          });
+        // Filter out any rooms that are already booked
+        const availableRooms = rooms.filter(
+          (room) => room.bookingStatus === false
+        );
 
-          roomType.room_no.map((elt) => {
-            roomNos.push({
-              userName: reqRoomType.userName,
-              roomno: elt.no,
-            });
-          });
-          return roomNos;
-        })
-      );
-
-      return roomNos;
+        // Return the list of available room numbers
+        const availableRoomNos = availableRooms.map((room) => room.roomNo);
+        return availableRoomNos;
+      } catch (error) {
+        console.error(error);
+        throw new Error("Failed to find available rooms for user");
+      }
     };
 
-    const roomNos = await getRoomNos();
+    // Create an object to store available rooms for each user
+    const availableRoomsByUser = {};
 
-    // console.log("Room nos: ", roomNos);
-
-    // const roomStatus = [];
-    
-    async function getRoomStatus() {
-      const roomStatus = [];
-    
-      await Promise.all(
-        roomNos.map(async (elt) => {
-          const room = await Room.findOne({ roomNo: elt.roomno });
-    
-          roomStatus.push({
-            userName: elt.userName,
-            roomNo: room.roomNo,
-            bookingStatus: room.bookingStatus,
-          });
-        })
+    // Iterate through each user and find available rooms
+    for (const user of users) {
+      const availableRooms = await findAvailableRoomsForUser(
+        user.room_type.name
       );
-    
-      return roomStatus;
+
+      // Add the available rooms to the object with the user's name as the key
+      availableRoomsByUser[user.name] = availableRooms;
     }
 
-    const roomStatus = await getRoomStatus();
-
-    console.log("hey :", roomStatus);
-
-    const data = {
-      users: users,
-      roomStatus: roomStatus,
-    }
-    
+    // Send the available rooms by user in the response
     res.status(200).json({
       success: true,
-      data,
+      users,
+      availableRoomsByUser,
     });
   } catch (error) {
     res.status(500).json({
