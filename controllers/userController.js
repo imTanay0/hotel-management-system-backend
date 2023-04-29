@@ -17,6 +17,13 @@ export const bookUser = async (req, res) => {
       rateNegotiated,
     } = req.body;
 
+    if (contactNo.length !== 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid phone number",
+      });
+    }
+
     // Check if desired room is available or not.
     const roomType = await RoomType.findOne({ room_type: roomTypeName });
 
@@ -149,6 +156,13 @@ export const allocateRoom = async (req, res) => {
     company_name,
     GSTIN_no,
   } = req.body;
+
+  if (phone_number.length !== 10 && local_contact_number.length !== 10) {
+    return res.status(400).json({
+      success: false,
+      message: "Please enter a valid phone number",
+    });
+  }
 
   try {
     const user = await User.findOne({ name });
