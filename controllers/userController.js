@@ -38,7 +38,7 @@ export const bookUser = async (req, res) => {
         name: roomTypeName,
         id: roomType._id,
       },
-      rate_negotiated: rateNegotiated,
+      rate_negotiated: Number(rateNegotiated),
     });
 
     res.status(201).json({
