@@ -22,7 +22,7 @@ export const insertFood = async (req, res) => {
   }
 };
 
-// get food details
+// get a single food details by id
 export const getFoodDetails = async (req, res) => {
   const foodId = req.params.f_id;
 
@@ -47,3 +47,30 @@ export const getFoodDetails = async (req, res) => {
     });
   }
 };
+
+// Get all Food details
+export const getAllFoods = async (req, res) => {
+  try {
+    const foods = await Food.find();
+
+    if (!foods) {
+      return res.status(404).json({
+        success: false,
+        message: "No foods found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      foods,a
+    })
+    
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    })
+  }
+  
+}
+

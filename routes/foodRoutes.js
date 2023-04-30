@@ -1,6 +1,6 @@
 import express from "express";
 
-import { insertFood, getFoodDetails } from "../controllers/foodController.js";
+import { insertFood, getFoodDetails, getAllFoods } from "../controllers/foodController.js";
 
 const router = express.Router();
 
@@ -9,8 +9,11 @@ const router = express.Router();
 // insert food
 router.route("/insert").post(insertFood);
 
-//get food details
+//get a single food details by id
 router.route("/details/:f_id").get(getFoodDetails);
+
+// Get all food details
+router.route("/allfoods").get(getAllFoods);
 
 
 export default router;
