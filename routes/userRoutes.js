@@ -6,7 +6,7 @@ import {
   getAllCustomers,
   allocateRoom,
   getAllResidents,
-  updateFoodOrder,
+  orderFood,
 } from "../controllers/userController.js";
 
 
@@ -29,6 +29,6 @@ router.route("/allocateroom").post(allocateRoom);
 router.route("/getallresidents").get(getAllResidents);
 
 // update food order
-router.route("/order-food/:u_id").post(updateFoodOrder);
+router.route("/order-food/:u_id").post(orderFood);
 
 export default router;

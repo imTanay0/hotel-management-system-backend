@@ -261,7 +261,7 @@ export const getAllResidents = async (req, res) => {
 
 // Stage 4 -> Food
 // update food order for user
-export const updateFoodOrder = async (req, res) => {
+export const orderFood = async (req, res) => {
   const userId = req.params.u_id;
 
   const { date, time, room_no, food_name, amount } = req.body;
@@ -272,7 +272,15 @@ export const updateFoodOrder = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Customer not found",
+      });
+    }
+
+    // Validation for non-residing customers
+    if (!user.roomAllocatedStatus) {
+      return res.status(400).json({
+        success: false,
+        message: "Customer has not been allocated a room",
       });
     }
 
@@ -281,26 +289,31 @@ export const updateFoodOrder = async (req, res) => {
     if (!food) {
       return res.status(404).json({
         success: false,
-        message: "Food not found",
+        message: "Food is not available",
       });
     }
 
     // Create new food object to add to user's list of ordered foods
-    const newFood = {
-      date: date,
-      time: time,
-      room_no: room_no,
-      items_ordered: {
-        food_name: food_name,
-        food_id: food._id,
-      },
-      amount: amount,
-    };
+    function createNewFood() {
+      const obj = {
+        date: date,
+        time: time,
+        room_no: room_no,
+        items_ordered: {
+          food_name: food_name,
+          food_id: food._id,
+        },
+        amount: amount,
+      };
+      return obj;
+    }
+
+    const newFood = createNewFood();
 
     await user.updateOne({ $push: { user_foods: newFood } });
 
     const userFoodResponse = {
-      userFood: user.user_foods.map((food) => food),
+      userFood: user.user_foods.concat(newFood),
     };
 
     res.status(200).json({
