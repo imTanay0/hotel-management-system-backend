@@ -267,6 +267,8 @@ export const orderFood = async (req, res) => {
 
   const { date, time, room_no, food_name, amount } = req.body;
 
+  amount = Number(amount);
+  
   try {
     const user = await User.findById(userId);
 
