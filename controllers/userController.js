@@ -290,9 +290,7 @@ export const getAllResidents = async (req, res) => {
 export const orderFood = async (req, res) => {
   const userId = req.params.u_id;
 
-  const { date, time, room_no, food_name, amount } = req.body;
-
-  amount = Number(amount);
+  const { date, time, roomNo, foodName, amount } = req.body;
 
   try {
     const user = await User.findById(userId);
@@ -312,7 +310,7 @@ export const orderFood = async (req, res) => {
       });
     }
 
-    const food = await Food.findOne({ name: food_name });
+    const food = await Food.findOne({ name: foodName });
 
     if (!food) {
       return res.status(404).json({
@@ -326,9 +324,9 @@ export const orderFood = async (req, res) => {
       const obj = {
         date: date,
         time: time,
-        room_no: room_no,
+        room_no: roomNo,
         items_ordered: {
-          food_name: food_name,
+          food_name: foodName,
           food_id: food._id,
         },
         amount: amount,
