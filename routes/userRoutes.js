@@ -2,20 +2,24 @@ import express from "express";
 
 import {
   bookUser,
+  getCustomerById,
   getBookings,
   getAllCustomers,
   allocateRoom,
   getAllResidents,
   orderFood,
-  getCustomerBill
+  getCustomerBill,
 } from "../controllers/userController.js";
-
 
 
 const router = express.Router();
 
+
 // Room Allocation (Stage 3) ->
 router.route("/book").post(bookUser);
+
+// Get customer by id
+router.route("/getdetail/:u_id").get(getCustomerById);
 
 // get All booking details
 router.route("/bookings").get(getBookings);

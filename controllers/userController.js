@@ -61,6 +61,31 @@ export const bookUser = async (req, res) => {
   }
 };
 
+// Get a user by id
+export const getCustomerById = async (req, res) => {
+  const userId = req.params.u_id;
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Customer not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // show all bookings
 export const getBookings = async (req, res) => {
   try {
@@ -268,7 +293,7 @@ export const orderFood = async (req, res) => {
   const { date, time, room_no, food_name, amount } = req.body;
 
   amount = Number(amount);
-  
+
   try {
     const user = await User.findById(userId);
 
@@ -361,7 +386,6 @@ export const getCustomerBill = async (req, res) => {
     }
 
     // Get price of the ordered food
-
     const getFoodPrices = user.user_foods.map(async (foodItem) => {
       let tempFoodPrices = {};
       try {
