@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import RoomType from "../models/roomTypeModel.js";
 import Room from "../models/roomModel.js";
 import Food from "../models/foodModel.js";
+import { calcFoodBill, calcNoOfDays, calcRoomBill } from "../utils.js";
 
 // Stage 2 -> Book User
 // book a user
@@ -331,4 +332,76 @@ export const orderFood = async (req, res) => {
 
 // Stage 5 -> Billing
 // calculate total amount of user
-export const userBill = async (req, res) => {};
+export const getCustomerBill = async (req, res) => {
+  const userId = req.params.u_id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer not found",
+      });
+    }
+
+    if (!user.roomAllocatedStatus) {
+      return res.status(400).json({
+        success: false,
+        message: "Customer has not been allocated a room",
+      });
+    }
+
+    let date2 = new Date();
+
+    if (user.booking_to <= date2) {
+      date2 = user.booking_to;
+    }
+
+    // Get price of the ordered food
+
+    const getFoodPrices = user.user_foods.map(async (foodItem) => {
+      let tempFoodPrices = {};
+      try {
+        const food = await Food.findById(foodItem.items_ordered.food_id);
+
+        tempFoodPrices = {
+          ...tempFoodPrices,
+          foodName: food.name,
+          foodPrice: food.price,
+        };
+
+        return tempFoodPrices;
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    });
+
+    const foodPrices = await Promise.all(getFoodPrices);
+
+    const data = {
+      checkInDate: user.date_of_check_in,
+      checkOutDate: user.booking_to,
+      name: user.name,
+      GSTINno: user.GSTIN_no,
+      noOfDays: calcNoOfDays(user.date_of_check_in, date2),
+      roomRent: user.rate_negotiated,
+      roomBill: calcRoomBill(
+        calcNoOfDays(user.date_of_check_in, date2),
+        user.rate_negotiated
+      ),
+      foodBill: calcFoodBill(user.user_foods, foodPrices),
+    };
+
+    res.status(200).json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

@@ -62,7 +62,7 @@ export const getAllFoods = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      foods,a
+      foods,
     })
     
   } catch (error) {

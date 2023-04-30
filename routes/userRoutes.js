@@ -7,6 +7,7 @@ import {
   allocateRoom,
   getAllResidents,
   orderFood,
+  getCustomerBill
 } from "../controllers/userController.js";
 
 
@@ -30,5 +31,8 @@ router.route("/getallresidents").get(getAllResidents);
 
 // update food order
 router.route("/order-food/:u_id").post(orderFood);
+
+// Get customer bill by id
+router.route("/getbill/:u_id").get(getCustomerBill);
 
 export default router;
