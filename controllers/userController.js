@@ -356,8 +356,8 @@ export const orderFood = async (req, res) => {
 };
 
 // Stage 5 -> Billing
-// calculate total amount of user
-export const getCustomerBill = async (req, res) => {
+// calculate total bill of user
+export const getOneCustomerBill = async (req, res) => {
   const userId = req.params.u_id;
 
   try {
