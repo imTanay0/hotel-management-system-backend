@@ -8,6 +8,10 @@ export const calcNoOfDays = (date1, date2) => {
   const diffInHours = diffInMinutes / 60;
   const diffInDays = diffInHours / 24;
 
+  if (diffInDays < 0) {
+    return diffInDays;
+  }
+
   return Math.floor(diffInDays);
 };
 
