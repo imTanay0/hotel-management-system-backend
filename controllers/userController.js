@@ -183,12 +183,12 @@ export const allocateRoom = async (req, res) => {
     GSTIN_no,
   } = req.body;
 
-  if (phone_number.length !== 10 && local_contact_number.length !== 10) {
-    return res.status(400).json({
-      success: false,
-      message: "Please enter a valid phone number",
-    });
-  }
+  // if (phone_number.length !== 10 && local_contact_number.length !== 10) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: "Please enter a valid phone number",
+  //   });
+  // }
 
   try {
     const user = await User.findOne({ name });
